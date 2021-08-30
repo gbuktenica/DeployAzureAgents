@@ -163,6 +163,9 @@ param (
     [pscredential]
     $Credential,
     [Parameter()]
+    [string]
+    $Account = 'Admin',
+    [Parameter()]
     [switch]
     $Renew,
     [Parameter()]
@@ -271,7 +274,7 @@ if ($null -eq $Credential) {
     if ($NoSave) {
         $Credential = Get-Credential
     } else {
-        $Credential = Get-SavedCredentials -Title Admin -Renew:$Renew
+        $Credential = Get-SavedCredentials -Title $Account -Renew:$Renew
     }
 }
 # Download PsExec if not found
@@ -432,7 +435,7 @@ foreach ($ComputerName in $ComputerNames) {
             Write-Verbose "Creating new PsSession"
             if ($ConfigurationName -eq "ClientDefault") {
                 try {
-                    $Session = New-PsSession -ComputerName $ComputerName -Credential $Credential -ErrorAction Stop -Authentication 
+                    $Session = New-PsSession -ComputerName $ComputerName -Credential $Credential -ErrorAction Stop
                 } catch {
                     Write-Warning "Computer $ComputerName : $_.Exception.Message"
                     # Update error log
@@ -475,7 +478,7 @@ foreach ($ComputerName in $ComputerNames) {
             # Remove destination files
             if (Test-Path -Path "Destination:\") {
                 if (-not $Keep) {
-                    $SourcePathTail = $SourcePath -replace ("/","\") -split ("\\")
+                    $SourcePathTail = $SourcePath -replace ("/", "\") -split ("\\")
                     $SourcePathTail = $SourcePathTail[($SourcePathTail.length - 1)]
                     $RemoveFolder = "Destination:\" + $SourcePathTail
                     if (Test-Path -Path $RemoveFolder) {
