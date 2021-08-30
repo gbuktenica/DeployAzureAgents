@@ -1,0 +1,1 @@
+.\Run-RemoteCode.ps1 -SourceType List -ListPath .\ComputerNames.txt -ScriptBlockFilePath .\ScriptBlock.ps1 -Verbose
